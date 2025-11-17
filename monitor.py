@@ -275,7 +275,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--format", choices=["csv", "jsonl"], default="csv", help="Output format"
     )
     p.add_argument(
-        "--command",
+        "command",
         type=str,
         nargs=argparse.REMAINDER,
         help='External command to run while monitoring (specify after "--")',
@@ -290,6 +290,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--no-power", action="store_true", help="Disable power rail monitoring"
     )
+    p.add_argument("--no-cpu", action="store_true", help="Disable CPU monitoring")
     p.add_argument(
         "--log-level",
         default="INFO",
@@ -405,13 +406,14 @@ def main():
                 row["power_total_w"] = round(total_power_w, 3)
 
             # Sample system CPU usage
-            cpu_percent = psutil.cpu_percent(interval=None)
-            row["system_cpu_percent"] = round(cpu_percent, 1)
-            
-            # Sample per-core CPU usage
-            cpu_per_core = psutil.cpu_percent(interval=None, percpu=True)
-            for i, core_pct in enumerate(cpu_per_core):
-                row[f"cpu{i}_percent"] = round(core_pct, 1)
+            if not args.no_cpu:
+                cpu_percent = psutil.cpu_percent(interval=None)
+                row["system_cpu_percent"] = round(cpu_percent, 1)
+                
+                # Sample per-core CPU usage
+                cpu_per_core = psutil.cpu_percent(interval=None, percpu=True)
+                for i, core_pct in enumerate(cpu_per_core):
+                    row[f"cpu{i}_percent"] = round(core_pct, 1)
 
             # Sample GPU power and utilization
             for g in gpu_devices:
