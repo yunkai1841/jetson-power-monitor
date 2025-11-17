@@ -1,0 +1,11 @@
+[project]
+name = "jetson-power-monitor"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "loguru>=0.7.3",
+    "nvidia-ml-py>=13.580.82",
+    "psutil>=7.1.3",
+]
