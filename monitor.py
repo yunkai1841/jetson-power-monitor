@@ -394,16 +394,10 @@ def main():
             }
 
             # Sample power rails
-            total_power_w = 0.0
             for rail in power_rails:
                 power_w = rail.read_power_w()
                 if power_w is not None:
                     row[f"power_{rail.name}_w"] = round(power_w, 3)
-                    total_power_w += power_w
-            
-            # Add total power if multiple rails exist
-            if len(power_rails) > 1 and total_power_w > 0:
-                row["power_total_w"] = round(total_power_w, 3)
 
             # Sample system CPU usage
             if not args.no_cpu:
